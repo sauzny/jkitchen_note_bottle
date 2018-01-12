@@ -15,6 +15,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Range;
 import com.google.common.collect.Table;
 import com.sauzny.crosstable.cell.HeaderCell;
+import com.sauzny.crosstable.tools.StopWatch;
 
 public class CrossTabulationsTest {
 
@@ -65,6 +66,7 @@ public class CrossTabulationsTest {
         //boolean isResult = true;
         boolean isResult = false;
         
+        // 这个我把spring里的StopWatch复制过来了……
         StopWatch clock = new StopWatch("交叉表demo");
         
         // 模拟输入参数

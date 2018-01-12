@@ -46,9 +46,11 @@ public final class BuildCtrBody {
                     cell.setData("");
                 }else{
                     cell.setData(valueTable.get(rowKey, columnKey));
+                    /*
                     if(!NumberUtils.isCreatable(String.valueOf(valueTable.get(rowKey, columnKey)))){
                         cell.setChartType("column");
                     }
+                    */
                 }
                 currentRow.add(cell);
             }
