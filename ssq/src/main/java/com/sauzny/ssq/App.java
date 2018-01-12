@@ -13,6 +13,7 @@ import com.sauzny.ssq.entity.YuCeLanTemp;
  */
 public class App {
     public static void main(String[] args) {
+        
         // 增加历史数据
         DataManager.addHistory();
         
