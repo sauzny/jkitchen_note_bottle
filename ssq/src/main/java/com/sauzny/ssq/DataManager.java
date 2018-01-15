@@ -25,15 +25,15 @@ import com.sauzny.ssq.entity.SsqEntity;
  * *************************************************************************
  * @文件名称: DataManager.java
  *
- * @包路径  : com.sauzny.jkitchen_note.demo.ssq 
+ * @包路径  : com.sauzny.ssq 
  *				 
  * @版权所有: Personal xinxin (C) 2017
  *
- * @类描述:   数据管理器
+ * @类描述:   TODO
  * 
  * @创建人:   ljx 
  *
- * @创建时间: 2018年1月11日 - 上午8:59:41 
+ * @创建时间: 2018年1月15日 - 上午10:21:16 
  *	
  **************************************************************************
  */
@@ -134,7 +134,10 @@ public final class DataManager {
                         .replace(firsthangTemplate, "期号："+curQihao+" 开奖日期："+curRiqi)
                         .replace(ycredTemplate, ycred)
                         .replace(ycblueTemplate, ycblue);
-                row.append(html);
+                
+                // 方法在被选元素的开头插入内容
+                row.prepend(html);
+                
                 // 不能使用下面的方法
                 //System.out.println(row.html());
                 //doc.getElementById(curQihao + "_2_1").appendText(ycred);
