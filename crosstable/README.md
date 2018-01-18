@@ -77,3 +77,23 @@ left_sum | left_sum | 606.0 | 1206.0 | 606.0 | 1206.0 |  |  |  |  |  |  | 606.0 
 
 ## 二、逻辑过程
 
+目标数据格式分为如下部分
+
+- 左上角空白区
+- top表头
+	- 普通表头
+	- 函数表头
+	- 总计表头
+- left表头
+	- 普通表头
+	- 函数表头
+	- 总计表头
+- value区
+	- 原始值
+	- 函数计算值
+
+`com.sauzny.crosstable.CrossTabulationsTest.java`为主函数类，逻辑过程如下：
+
+![](images/logic.png)
+
+
