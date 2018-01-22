@@ -158,7 +158,7 @@ public final class DataManager {
                 
                 // 计算红球中奖个数
                 Set<String> preYcredSet = Sets.newHashSet(preYcred.split(" "));
-                Set<String> preSjredSet = Sets.newHashSet(preSsqEntity.getHsorts());
+                Set<String> preSjredSet = Sets.newHashSet(preSsqEntity.getHsorts().split(","));
                 
                 // 求交集
                 int sjred = Sets.intersection(preYcredSet, preSjredSet).size();
