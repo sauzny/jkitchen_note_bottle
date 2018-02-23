@@ -89,6 +89,8 @@ public final class DataManager {
             
             Files.write(historyPath, ("\n"+ssqEntity.line()).getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
             
+            System.out.println("增加历史数据：" + ssqEntity.getRiqi());
+            
         }catch(Exception e){
             System.err.println("无法增加新的历史数据");
         } 
@@ -120,6 +122,8 @@ public final class DataManager {
         int curQihao = preSsqEntity.getQihao()+1;
         
         String curRiqi = TimeUtils.nextSsqDate(LocalDate.parse(preSsqEntity.getRiqi())).toString();
+        
+        System.out.println("增加预测数据：" + curRiqi);
         
         // 
         try {
