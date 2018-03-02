@@ -8,8 +8,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multiset;
 import com.sauzny.ssq.entity.SsqEntity;
 import com.sauzny.ssq.entity.YuCeLanTemp;
 
@@ -34,7 +36,31 @@ public final class ForecastLan {
 
     private ForecastLan(){}
     
-    public static List<YuCeLanTemp> forecast(){
+    public static Integer forecastAvg(){
+        
+        Integer result = 0;
+        Integer count = 0;
+        
+        Multiset<Integer> multiset = HashMultiset.create();
+        for(int i=50; i<150; i++){
+            Integer element = forecast(i).get(0).getNum();
+            multiset.add(element);
+        }
+        for(Multiset.Entry<Integer> entry : multiset.entrySet()){
+            System.out.println("每一个元素输出：" + entry.getElement() + "  -  " + entry.getCount());
+            if(entry.getCount() >= count){
+                result = entry.getElement();
+                count = entry.getCount();
+            }
+        }
+        return result;
+    }
+    
+    public static List<YuCeLanTemp> forecastDefault(){
+        return forecast(100);
+    }
+    
+    public static List<YuCeLanTemp> forecast(int limit){
         
         List<String> lines = DataManager.loadHistory();
         Collections.reverse(lines);
@@ -48,7 +74,7 @@ public final class ForecastLan {
         Map<Integer, Integer> resultLan = Maps.newHashMap();
 
         // 变换数据类型， String -> SsqEntity
-        Stream<SsqEntity> stream = lines.stream().limit(100).map(line -> new SsqEntity(line) );
+        Stream<SsqEntity> stream = lines.stream().limit(limit).map(line -> new SsqEntity(line) );
 
         // group by
         Map<Integer, List<SsqEntity>> map = stream.collect(Collectors.groupingBy(SsqEntity::getLan, Collectors.toList()));

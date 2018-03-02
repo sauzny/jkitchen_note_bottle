@@ -20,8 +20,9 @@ public class App {
         System.out.println("增加历史数据 - 完成");
         
         // 预测蓝球
-        List<YuCeLanTemp> yuCeLanList = ForecastLan.forecast();
-        int lan = yuCeLanList.get(0).getNum();
+        //List<YuCeLanTemp> yuCeLanList = ForecastLan.forecast();
+        //int lan = yuCeLanList.get(0).getNum();
+        int lan = ForecastLan.forecastAvg();
         
         System.out.println("预测蓝球 - 完成");
         
