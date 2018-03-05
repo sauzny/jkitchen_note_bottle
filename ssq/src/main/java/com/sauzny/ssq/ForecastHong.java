@@ -54,6 +54,13 @@ public final class ForecastHong {
                 break;
             }
         }
+
+        if(ssqHList.size() == 0){
+            List<YuCeHongTemp> temp = Iterables.getLast(resultTempList);
+            for(int i=0; i<6; i++){
+                ssqHList.add(temp.get(i));
+            }
+        }
         
         return ssqHList;
     }
