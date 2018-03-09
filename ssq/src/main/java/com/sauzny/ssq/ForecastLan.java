@@ -47,7 +47,7 @@ public final class ForecastLan {
             multiset.add(element);
         }
         for(Multiset.Entry<Integer> entry : multiset.entrySet()){
-            System.out.println("每一个元素输出：" + entry.getElement() + "  -  " + entry.getCount());
+            System.out.println("蓝球号码：" + entry.getElement() + "  -  次数：" + entry.getCount());
             if(entry.getCount() >= count){
                 result = entry.getElement();
                 count = entry.getCount();
