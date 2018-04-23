@@ -1,24 +1,7 @@
 # leetcode 01-10
 
-## 01
-
-已知一个整型数组，数组中的元素不重复。问，数组中的哪两个元素可以得到目标值？
-
-```
-Given nums = [2, 7, 11, 15], target = 9,
-
-Because nums[0] + nums[1] = 2 + 7 = 9,
-return [0, 1].
-```
-
-## 02
-
-两个非空链表相加，链表中的元素是正整数。从第一位开始相加，如果出现进位的情况，则下一个节点+1。
-
-```
-Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
-Output: 7 -> 0 -> 8
-
-Input: (3 -> 4 -> 5) + (3 -> 8)
-Output: 6 -> 2 -> 6
-```
+1. [两数之和](https://leetcode-cn.com/problems/two-sum)
+2. [两数相加](https://leetcode-cn.com/problems/add-two-numbers)
+3. [无重复字符的最长子串](https://leetcode-cn.com/problems/longest-substring-without-repeating-characters)
+4. [两个排序数组的中位数](https://leetcode-cn.com/problems/median-of-two-sorted-arrays)
+5. [最长回文子串](https://leetcode-cn.com/problems/longest-palindromic-substring)
