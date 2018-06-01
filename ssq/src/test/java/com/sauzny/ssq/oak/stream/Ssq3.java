@@ -1,27 +1,23 @@
 package com.sauzny.ssq.oak.stream;
 
-import java.io.IOException;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+
+import java.io.File;
+import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.sauzny.ssq.jsoup.SsqJsoup;
-import com.sauzny.ssq.oak.time.Time;
-
+import com.sauzny.ssq.ForecastHong;
+import com.sauzny.ssq.entity.YuCeHongTemp;
 
 /**
  * *************************************************************************
@@ -59,7 +55,7 @@ public class Ssq3 {
                 return new SsqEntity(values);
             });
             
-            List<SsqEntity> list = stream.collect(Collectors.toList());
+            List<SsqEntity> list = stream.collect(toList());
             
             // 定义最终结果
             List<Integer> result = Lists.newArrayList();
@@ -97,15 +93,25 @@ public class Ssq3 {
             int lastLan = new SsqEntity(lastValues).getLan();
 
             // 1. 变换数据类型， String -> SsqEntity
-            // 2. 过滤数据
-            // 3. 分组
-            Map<Integer, Long> map = lines.stream()
+            List<SsqEntity> ssqEntityList1 = lines.stream()
                     .map(line -> {
                         String[] values = line.split("\t");
                         return new SsqEntity(values);
                     })
-                    .filter(ssqEntity -> ssqEntity.getLan() == lastLan)
-                    .collect(Collectors.groupingBy(SsqEntity::getLan, Collectors.counting()));
+                    .collect(toList());
+            
+            
+            List<SsqEntity> ssqEntityList2 = Lists.newArrayList();
+            // 2. 过滤数据
+            for(int i=1; i<ssqEntityList1.size(); i++){
+                if(ssqEntityList1.get(i-1).getLan() == lastLan){
+                    ssqEntityList2.add(ssqEntityList1.get(i));
+                }
+            }
+
+            
+            // 3. 分组
+            Map<Integer, Long> map = ssqEntityList2.stream().collect(groupingBy(SsqEntity::getLan, counting()));
             
             map.forEach((k,v) -> System.out.println("lan:" + k + ", 次数：" + v) );
             
@@ -115,7 +121,67 @@ public class Ssq3 {
         }
     }
     
+    public static String lastLine(File file, String charset) {
+        if (!file.exists() || file.isDirectory() || !file.canRead()) {
+            return null;
+        }
+        RandomAccessFile raf = null;
+        try {
+            raf = new RandomAccessFile(file, "r");
+            long len = raf.length();
+            if (len == 0L) {
+                return "";
+            } else {
+                long pos = len - 1;
+                while (pos > 0) {
+                    pos--;
+                    raf.seek(pos);
+                    if (raf.readByte() == '\n') {
+                        break;
+                    }
+                }
+                if (pos == 0) {
+                    raf.seek(0);
+                }
+                byte[] bytes = new byte[(int) (len - pos)];
+                raf.read(bytes);
+                if (charset == null) {
+                    return new String(bytes);
+                } else {
+                    return new String(bytes, charset);
+                }
+            }
+        } catch (Exception e) {
+        } finally {
+            if (raf != null) {
+                try {
+                    raf.close();
+                } catch (Exception e2) {
+                }
+            }
+        }
+        return null;
+    }
+    
+    public static SsqEntity lastSsqEntity(){
+        
+        String userDir = System.getProperty("user.dir");
+        
+        String line = lastLine(new File(userDir+"/history_ssq.dat"), StandardCharsets.UTF_8.toString());
+        
+        String[] values = line.split("\t");
+        
+        return new SsqEntity(values);
+    }
+    
     public static void main(String[] args) {
         Ssq3.foo02();
+        
+        int lastLan = lastSsqEntity().getLan();
+        
+        List<YuCeHongTemp> yuCeHongList = ForecastHong.forecast(lastLan);
+
+        yuCeHongList.forEach(temp -> System.out.print(temp.getHongNum() + " ") );
+        System.out.println(" " + lastLan);
     }
 }
