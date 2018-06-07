@@ -1,4 +1,4 @@
-	package com.sauzny.xxleetcode.p01_10;
+	package com.sauzny.xxleetcode.p001_010;
 
 /**
 Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)

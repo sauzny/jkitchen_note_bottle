@@ -1,4 +1,4 @@
-package com.sauzny.xxleetcode.p01_10;
+package com.sauzny.xxleetcode.p001_010;
 
 import java.util.Arrays;
 import java.util.HashMap;
