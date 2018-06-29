@@ -5,10 +5,12 @@ import static java.util.stream.Collectors.toList;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.common.collect.Lists;
 import com.sauzny.ssq.ForecastHong;
 import com.sauzny.ssq.entity.YuCeHongTemp;
 
@@ -60,6 +62,16 @@ public class Ssq4 {
     
     public static void main(String[] args) {
         Ssq4.foo01();
-        Ssq4.foo02(1);
+        
+        System.out.println();
+        Ssq4.foo02(2);
+        
+        List<Integer> allHong = Lists.newArrayList();
+        for(int i= 1;i<34;i++){
+            allHong.add(i);
+        }
+        
+        Collections.shuffle(allHong);
+        System.out.println(allHong.subList(0, 6));
     }
 }
