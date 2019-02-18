@@ -6,67 +6,55 @@ public class Solution015 {
 
     public List<List<Integer>> threeSum(int[] nums) {
 
-        if(nums.length < 3) return new ArrayList<List<Integer>>();
+        if(nums.length < 3) return Collections.emptyList();
 
         // 排序
         Arrays.sort(nums);
 
         // 全正数
-        if(nums[0] > 0) return new ArrayList<List<Integer>>();
+        if(nums[0] > 0) return Collections.emptyList();
 
         // 全负数
-        if(nums[nums.length-1] < 0) return new ArrayList<List<Integer>>();
+        if(nums[nums.length-1] < 0) return Collections.emptyList();
 
         // 全0
         if(nums[0] == 0 && nums[nums.length-1] == 0){
             List<List<Integer>> result = new ArrayList<List<Integer>>();
-            List<Integer> list = new ArrayList<Integer>();
-            list.add(0);
-            list.add(0);
-            list.add(0);
-            result.add(list);
+            result.add(Arrays.asList(0, 0, 0));
             return result;
-        }
-
-        // 将正数制作为map
-        Map<Integer, Integer> positiveMap = new HashMap<Integer, Integer>();
-        for(int i=0;i<nums.length; i++){
-            if(nums[i] > 0) positiveMap.put(nums[i],i);
-        }
-
-        Set<List<Integer>> temp = new HashSet<List<Integer>>();
-
-        for(int i=0; i<nums.length-2; i++){
-            if(nums[i] > 0) break;
-            for(int j=i+1; j<nums.length-1; j++){
-                if(nums[i] + nums[j]> 0) {
-                    break;
-                }else if(nums[i] + nums[j] == 0){
-                    if(nums[j+1] == 0){
-                        List<Integer> list = new ArrayList<Integer>();
-                        list.add(0);
-                        list.add(0);
-                        list.add(0);
-                        temp.add(list);
-                    }
-                }else{
-                    int key = -(nums[i] + nums[j]);
-                    Integer index = positiveMap.get(key);
-                    if(index != null && index >j){
-                        List<Integer> list = new ArrayList<Integer>();
-                        list.add(nums[i]);
-                        list.add(nums[j]);
-                        list.add(key);
-                        temp.add(list);
-                    }
-                }
-            }
         }
 
         List<List<Integer>> result = new ArrayList<List<Integer>>();
 
-        for(List<Integer> list : temp){
-            result.add(list);
+        for(int i=0; i<nums.length-2; i++){
+
+            if (nums[i] > 0) break;
+
+            if(i > 0 && nums[i] == nums[i-1]) continue;
+
+            int l = i+1;
+            int r = nums.length - 1;
+
+            while (l < r) {
+
+                if (nums[r] < 0) break;
+
+                int sum = nums[i] + nums[l] + nums[r];
+
+                if (sum < 0) {
+                    l++;
+                    while (l < r && nums[l] == nums[l+1]) l++;
+                } else if (sum > 0) {
+                    r--;
+                    while (r > l && nums[r] == nums[r-1]) r--;
+                } else {
+                    result.add(Arrays.asList(nums[i], nums[l], nums[r]));
+                    l++;
+                    r--;
+                    while (l < r && nums[l] == nums[l+1]) l++;
+                    while (r > l && nums[r] == nums[r-1]) r--;
+                }
+            }
         }
 
         return result;
