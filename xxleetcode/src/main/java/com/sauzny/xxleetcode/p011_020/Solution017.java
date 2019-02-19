@@ -9,7 +9,7 @@ import java.util.*;
  * @描述: TODO
  *
  ***************************************************************************/
-public class Solution17 {
+public class Solution017 {
     public List<String> letterCombinations(String digits) {
         Map<Character, String> map = new HashMap<Character, String>();
         map.put('2', "abc");
@@ -49,8 +49,8 @@ public class Solution17 {
     }
 
     public static void main(String[] args) {
-        Solution17 solution17 = new Solution17();
-        List<String> result = solution17.letterCombinations("234");
+        Solution017 solution017 = new Solution017();
+        List<String> result = solution017.letterCombinations("234");
         System.out.println(result);
     }
 }
