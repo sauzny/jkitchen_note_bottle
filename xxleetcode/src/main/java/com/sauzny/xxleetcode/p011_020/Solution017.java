@@ -36,7 +36,7 @@ public class Solution017 {
                     list.add(String.valueOf(c1));
                 }else{
                     for(String str : result){
-                        list.add(str+c1);
+                        list.add(new StringBuilder(str).append(c1).toString());
                     }
                 }
             }
@@ -50,7 +50,11 @@ public class Solution017 {
 
     public static void main(String[] args) {
         Solution017 solution017 = new Solution017();
+        long a = System.currentTimeMillis();
         List<String> result = solution017.letterCombinations("234");
+        long b = System.currentTimeMillis();
         System.out.println(result);
+        System.out.println("timing : " + (b-a));
     }
+
 }
