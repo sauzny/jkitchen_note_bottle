@@ -12,33 +12,40 @@ import com.sauzny.ssq.entity.YuCeLanTemp;
  *
  */
 public class App {
-    public static void main(String[] args) {
-        
+
+    public static void update1(){
+
         // 增加历史数据
         DataManager.addHistory();
-        
+
         System.out.println("增加历史数据 - 完成");
-        
+
         // 预测蓝球
         //List<YuCeLanTemp> yuCeLanList = ForecastLan.forecast();
         //int lan = yuCeLanList.get(0).getNum();
         int lan = ForecastLan.forecastAvg();
-        
+
         System.out.println("预测蓝球 - 完成");
-        
+
         // 预测红球
         List<YuCeHongTemp> yuCeHongList = ForecastHong.forecast(lan);
         //System.out.println(yuCeLanList.get(0).getNum());
         //yuCeHongList.forEach(System.out::println);
-        
+
         System.out.println("预测红球 - 完成");
-        
+
         // 增加预测数据
         List<Integer> hongNumList = yuCeHongList.stream().mapToInt(YuCeHongTemp::getHongNum).boxed().collect(Collectors.toList());
         hongNumList.sort( (n1,n2) -> n1.compareTo(n2));
         String ycred = Joiner.on(" ").join(hongNumList);
         DataManager.addForecast(ycred, String.valueOf(lan));
-        
+
         System.out.println("增加预测数据- 完成");
+    }
+
+    public static void main(String[] args) {
+        for(int i=0; i<10; i++){
+            App.update1();
+        }
     }
 }

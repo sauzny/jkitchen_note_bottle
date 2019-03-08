@@ -93,6 +93,8 @@ public final class DataManager {
             
         }catch(Exception e){
             System.err.println("无法增加新的历史数据");
+            e.printStackTrace();
+            System.exit(0);
         } 
         
     }
