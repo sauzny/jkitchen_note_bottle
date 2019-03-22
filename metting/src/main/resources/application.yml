@@ -1,0 +1,61 @@
+# https://docs.spring.io/spring-boot/docs/2.1.0.RELEASE/reference/html/common-application-properties.html
+
+# server
+server.port: 9090
+server.servlet.context-path: /metting
+
+# AOP
+# 是否支持@EnableAspectJAutoProxy，默认为: true
+spring.aop.auto: true
+# true为使用CGLIB代理，需要自己引入jar包，false为JDK代理，默认为false
+spring.aop.proxy-target-class: true
+
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+# 请查看pom文件中的注解，说明 jdbc pool的使用顺序
+# HikariCP settings
+# spring.datasource.hikari.*
+
+# 在 com.zaxxer.hikari.HikariConfig类中，能查看到很多属性及其默认值
+
+#60 sec
+spring.datasource.hikari.connection-timeout: 60000
+# max 5
+spring.datasource.hikari.maximum-pool-size: 5
+# 连接检测
+spring.datasource.hikari.connection-test-query: select 1
+
+# JDBC - H2
+# 开启h2数据库console访问
+# http://localhost:9090/metting/h2-console/
+spring.h2.console.enabled: true
+#驱动
+spring.datasource.driver-class-name: org.h2.Driver
+#数据库URL 嵌入模式
+spring.datasource.url: jdbc:h2:file:./H2/metting
+
+#数据库URL内存模式
+#spring.datasource.url=jdbc:h2:mem:hello
+#数据库URL嵌入模式
+#spring.datasource.url=jdbc:h2:file:F:/H2/hello
+#数据库URL服务模式
+#spring.datasource.url=jdbc:h2:tcp://localhost//F:/H2/hello
+
+#数据库账号密码
+spring.datasource.username: sa
+spring.datasource.password: sa
+
+spring.datasource.schema: classpath:db/schema.sql
+
+# JPA方言配置
+spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+
+# 修改数据库结构，hibernate -> 数据库结构
+spring.jpa.hibernate.ddl-auto: none
+
+# 是否打印sql语句
+spring.jpa.show-sql: true
+

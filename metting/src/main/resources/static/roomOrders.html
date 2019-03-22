@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>会议室预定列表</title>
+
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <!--<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>-->
+    <script src="./js/jquery-3.3.1.min.js"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript">
+        $(function(){
+
+            getRoomList();
+
+            var today = new Date();
+            create_calendar(today);
+
+            // 绑定点击事件
+            $("#last_month_button").click(function(){
+                var last_month = new Date();
+                last_month.setFullYear($("#title_year").text());
+                last_month.setMonth($("#title_month").text()-2);
+                create_calendar(last_month);
+            });
+            $("#next_month_button").click(function(){
+                var next_month = new Date();
+                next_month.setFullYear($("#title_year").text());
+                next_month.setMonth($("#title_month").text());
+                create_calendar(next_month);
+            });
+
+            $("#myOrderName_button").click(function(){
+                getRoomOrder();
+            });
+
+        });
+
+        function create_calendar(date){
+
+            var current_month_num = date.getMonth();
+
+            // 设置头部 年 月
+            $("#title_year").text(date.getFullYear());
+            $("#title_month").text(date.getMonth()+1);
+
+            var current_date = date;
+            current_date.setDate(1);
+            while(current_date.getDay() != 0){
+                current_date.setDate(current_date.getDate()-1);
+            }
+
+            // 清空页面部分元素
+            $("#minDate").val('');
+            $("#maxDate").val('');
+
+            for (var i=0;i<6;i++){
+                // 清空原数据
+                $("#calendar_x"+(i+1)).html("");
+                for (var j=0;j<7;j++){
+                    // 当前元素id
+                    var current_id = "calendar_"+current_date.getFullYear();
+                    if(current_date.getMonth()+1 < 10){
+                        current_id = current_id + "-0"+(current_date.getMonth()+1);
+                    }else{
+                        current_id = current_id + "-"+(current_date.getMonth()+1);
+                    }
+                    if(current_date.getDate() < 10){
+                        current_id = current_id + "-0"+current_date.getDate();
+                    }else{
+                        current_id = current_id + "-"+current_date.getDate();
+                    }
+                    // 给页面其他元素赋值
+                    if($("#minDate").val() == '') $("#minDate").val(current_id.split("_")[1]);
+                    $("#maxDate").val(current_id.split("_")[1]);
+
+                    $("#calendar_x"+(i+1)).append("<td id='"+current_id+"' data-toggle='modal' data-target='#myModal'></td>");
+                    //$("#"+current_id).height(100);
+                    $("#"+current_id).append('<p style="font-weight:bold;">日期：'+current_date.getDate()+'&nbsp;号</p>');
+                    $("#"+current_id).append('<div class="time_div"></div>');
+                    if(current_month_num != current_date.getMonth()){
+                        $("#"+current_id).css("color","LightGrey");
+                    }else{
+
+                    }
+                    // 将日期向后加1天
+                    current_date.setDate(current_date.getDate()+1);
+                }
+            }
+
+            // 绑定移入事件
+            $("#calendar_body tr td").mouseover(function(){
+                $(this).css("background-color","LightBlue");
+            }).mouseout(function () {
+                $(this).css("background-color", "white");
+            });
+
+            // 绑定点击事件
+            $("#calendar_body tr td").click(function(){
+
+            });
+
+        }
+
+        function getRoomList(){
+
+            // 获取会议室列表
+            $.get("rooms", function(data, status){
+                var roomList = data.object;
+                //console.log(roomList);
+                $("#roomListSelect").html("")
+                $("#roomListSelect").append('<label class="col-sm-2 control-label" for="roomSelect">会议室</label>');
+                $("#roomListSelect").append('<div class="col-sm-4"><select id="roomSelect" class="form-control"></select></div>');
+                for(i in roomList){
+                    $("#roomSelect").append('<option value="'+roomList[i].id+'">'+roomList[i].name + '&nbsp;' + roomList[i].maxNum +'人</option>');
+                }
+            });
+        }
+
+        function getRoomOrder(){
+            var roomId = $("#roomSelect").val();
+            var minDate = $("#minDate").val();
+            var maxDate = $("#maxDate").val();
+            $(".time_div").html("");
+            $.get("orders/room/"+roomId+"/date/"+minDate+"/"+maxDate,function(data, status){
+                var orderList = data.object;
+                for(i in orderList){
+                    var startTime = orderList[i].startTime.split("T")[1];
+                    var endTime = orderList[i].endTime.split("T")[1];
+                    $("#calendar_"+orderList[i].orderDate+" .time_div").append('<p data-toggle="tooltip" data-placement="bottom" title="'+orderList[i].username+'&nbsp;'+orderList[i].contact+'">'+startTime+'&nbsp;~&nbsp;'+endTime+'</p>');
+                }
+                $(".time_div p[data-toggle='tooltip']").tooltip();
+            });
+        }
+
+    </script>
+
+    <style type="text/css">
+        #last_month_button, #next_month_button{
+            width:100px;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <div style="margin:20px 60px">
+        <h3>查询会议室预定情况</h3>
+        <div style="width:600px; margin:20px 60px">
+            <form class="form-horizontal" role="form">
+                <div class="row form-group">
+                    <input id="minDate" type="hidden">
+                    <input id="maxDate" type="hidden">
+                    <div id="roomListSelect"></div>
+                    <div>
+                        <button id="myOrderName_button" type="button" class="btn btn-primary">
+                            查询预定
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <hr/>
+        <div style="width:300px; margin: 10px auto;font-weight:bold;">
+            <button id="last_month_button" type="button" class="btn btn-link">上个月</button>
+            <span id="title_year"></span>&nbsp;年&nbsp;<span id="title_month"></span>&nbsp;月
+            <button id="next_month_button" type="button" class="btn btn-link">下个月</button>
+        </div>
+        <div>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th style="color:red">周日</th>
+                    <th>周一</th>
+                    <th>周二</th>
+                    <th>周三</th>
+                    <th>周四</th>
+                    <th>周五</th>
+                    <th style="color:red">周六</th>
+                </tr>
+                </thead>
+                <tbody id="calendar_body">
+                    <tr id="calendar_x1"></tr>
+                    <tr id="calendar_x2"></tr>
+                    <tr id="calendar_x3"></tr>
+                    <tr id="calendar_x4"></tr>
+                    <tr id="calendar_x5"></tr>
+                    <tr id="calendar_x6"></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
