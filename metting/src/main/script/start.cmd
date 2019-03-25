@@ -1,0 +1,1 @@
+java -Xmx512M -Xms512M -cp conf;lib/* com.sauzny.metting.MettingApplication
