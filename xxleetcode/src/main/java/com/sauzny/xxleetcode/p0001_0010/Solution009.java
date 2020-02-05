@@ -1,4 +1,4 @@
-package com.sauzny.xxleetcode.p001_010;
+package com.sauzny.xxleetcode.p0001_0010;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,4 @@
-package com.sauzny.xxleetcode.p021_030;
-
-import com.sauzny.xxleetcode.p011_020.Solution020;
+package com.sauzny.xxleetcode.p0021_0030;
 
 /***************************************************************************
  *
