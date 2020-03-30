@@ -2,8 +2,10 @@ package com.sauzny.cdc.unique;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public class NameLock {
+public class UniqueLock {
 
     private int wait_count;
 
@@ -34,4 +36,5 @@ public class NameLock {
     public void setCond_map(Map<Integer, Boolean> cond_map) {
         this.cond_map = cond_map;
     }
+
 }
