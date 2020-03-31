@@ -1,28 +1,44 @@
 package com.sauzny.cdc.unique;
 
+import com.google.common.collect.Sets;
+
+import java.util.Set;
+
 public class User {
 
     private int id;
     private String name;
     private String type;
 
-    private int eventId;
-    private int waitEventId;
+    // 单列唯一索引 使用 demo2
+    private long waitEventId;
 
-    public int getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(int eventId) {
-        this.eventId = eventId;
-    }
-
-    public int getWaitEventId() {
+    public long getWaitEventId() {
         return waitEventId;
     }
 
-    public void setWaitEventId(int waitEventId) {
+    public void setWaitEventId(long waitEventId) {
         this.waitEventId = waitEventId;
+    }
+    // 单列唯一索引 使用 demo2
+
+    private long eventId;
+    private Set<Long> waitEventIdSet = Sets.newHashSet();
+
+    public long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(long eventId) {
+        this.eventId = eventId;
+    }
+
+    public Set<Long> getWaitEventIdSet() {
+        return waitEventIdSet;
+    }
+
+    public void setWaitEventIdSet(Set<Long> waitEventIdSet) {
+        this.waitEventIdSet = waitEventIdSet;
     }
 
     public User(int id, String name, String type) {
@@ -61,6 +77,9 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
+                ", eventId=" + eventId +
+                ", waitEventId=" + waitEventId +
+                ", waitEventId=" + waitEventIdSet +
                 '}';
     }
 }
