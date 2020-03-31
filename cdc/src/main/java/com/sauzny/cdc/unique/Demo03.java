@@ -83,6 +83,5 @@ public class Demo03 {
         // 假设两列唯一索引 name 和 type 两列唯一索引
         // 测试效果，1 线程内有序，2 name列有序， 3 type列有序
         Demo03.foo01();
-
     }
 }

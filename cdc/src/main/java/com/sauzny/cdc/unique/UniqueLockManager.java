@@ -21,19 +21,12 @@ public class UniqueLockManager {
         long eventId = atomicLong.incrementAndGet();
 
         // 模拟 获取 key1
-        String key1 = "user";
-        if (user instanceof User2) {
-            key1 = "user2";
-        }
+        final String key1 = key1(user);
 
-        for (String column : Lists.newArrayList("name", "type")) {
+        Lists.newArrayList("name", "type").forEach(column -> {
 
             // 模拟 获取 key2
-            String value = user.getName();
-            if ("type".equals(column)) {
-                value = user.getType();
-            }
-            String key2 = new StringJoiner("_").add(key1).add(column).add(value).toString();
+            String key2 = key2(user, key1, column);
 
             // 获取 lock 对象
             UniqueLock uniqueLock = uniqueLockTable.get(key1, key2);
@@ -52,35 +45,30 @@ public class UniqueLockManager {
             //
             user.setEventId(eventId);
             user.getWaitEventIdSet().add(wait_event_id);
-        }
+        });
+
     }
 
-    public static void releaseAndApply(User user, UniqueLockDealBusiness  uniqueLockDealBusiness) {
+    public static void releaseAndApply(User user, UniqueLockDealBusiness uniqueLockDealBusiness) {
 
         List<UniqueLock> uniqueLockList = Lists.newArrayList();
 
         // 模拟 获取 key1
-        String key1 = "user";
-        if (user instanceof User2) {
-            key1 = "user2";
-        }
+        final String key1 = key1(user);
 
         try {
+            // lambda表达式无法抛出受检异常
             for (String column : Lists.newArrayList("name", "type")) {
 
                 // 模拟 获取 key2
-                String value = user.getName();
-                if ("type".equals(column)) {
-                    value = user.getType();
-                }
-                String key2 = new StringJoiner("_").add(key1).add(column).add(value).toString();
+                String key2 = key2(user, key1, column);
 
                 UniqueLock uniqueLock = uniqueLockTable.get(key1, key2);
 
                 synchronized (uniqueLock) {
                     boolean isAllRelease = false;
                     while (!isAllRelease) {
-                        for(long waitEventId : user.getWaitEventIdSet()){
+                        for (long waitEventId : user.getWaitEventIdSet()) {
                             if (waitEventId != 0 && uniqueLock.getCond_map().getOrDefault(waitEventId, false)) {
                                 System.out.println(user + "  " + key1 + "  " + key2 + "  我要排队等待  " + waitEventId);
                                 uniqueLock.wait();
@@ -109,10 +97,34 @@ public class UniqueLockManager {
         uniqueLockList.forEach(uniqueLock -> {
             synchronized (uniqueLock) {
                 uniqueLock.setWait_count(uniqueLock.getWait_count() - 1);
-                uniqueLock.getCond_map().put(user.getEventId(), false);
-                uniqueLock.notifyAll();
+                if (uniqueLock.getWait_count() == 0) {
+                    uniqueLock.setEvent_id(0);
+                    uniqueLock.getCond_map().clear();
+                } else {
+                    uniqueLock.getCond_map().put(user.getEventId(), false);
+                    user.getWaitEventIdSet().forEach(waitEventId -> {
+                        uniqueLock.getCond_map().remove(waitEventId);
+                    });
+                    uniqueLock.notifyAll();
+                }
             }
         });
+    }
+
+    private static String key1(User user) {
+        String key1 = "user";
+        if (user instanceof User2) {
+            key1 = "user2";
+        }
+        return key1;
+    }
+
+    private static String key2(User user, String key1, String column) {
+        String value = user.getName();
+        if ("type".equals(column)) {
+            value = user.getType();
+        }
+        return new StringJoiner("_").add(key1).add(column).add(value).toString();
     }
 
     @FunctionalInterface
