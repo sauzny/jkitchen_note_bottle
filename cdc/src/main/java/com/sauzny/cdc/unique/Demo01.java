@@ -1,9 +1,7 @@
 package com.sauzny.cdc.unique;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -95,6 +93,7 @@ public class Demo01 {
     }
 
     public static void main(String[] args) {
+        // 无锁状态下的测试，只能保证线程内有序
         Demo01.foo01();
     }
 }

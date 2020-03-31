@@ -1,6 +1,9 @@
 package com.sauzny.cdc.unique;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -88,7 +91,7 @@ public class Demo02 {
                     UniqueLock uniqueLock = lockMap.get(user.getName());
                     synchronized(uniqueLock) {
                         while (true) {
-                            if (user.getWaitEventId() != 0 && uniqueLock.getCond_map().get(user.getWaitEventId())) {
+                            if(user.getWaitEventId() != 0 && uniqueLock.getCond_map().get(user.getWaitEventId())){
                                 System.out.println(user + " 我是 Trump，我要排队等待，说到等待，没有人比我更懂了");
                                 uniqueLock.wait();
                             } else {
@@ -139,14 +142,14 @@ public class Demo02 {
         for(int i=0; i<userList.size(); i++){
             User user = userList.get(i);
 
-            int eventId = i+1;
+            long eventId = i+1;
             //
             String name = user.getName();
             lockMap.putIfAbsent(name, new UniqueLock());
             UniqueLock uniqueLock = lockMap.get(name);
 
             uniqueLock.setWait_count(uniqueLock.getWait_count()+1);
-            int wait_event_id = uniqueLock.getEvent_id();
+            long wait_event_id = uniqueLock.getEvent_id();
             uniqueLock.setEvent_id(eventId);
             // true 持有 false 释放
             uniqueLock.getCond_map().put(eventId, true);
@@ -164,6 +167,8 @@ public class Demo02 {
     }
 
     public static void main(String[] args) {
+        // 假设name例是唯一索引
+        // 测试效果，1 线程内有序，2 name列有序
         Demo02.foo01();
     }
 }
