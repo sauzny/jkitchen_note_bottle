@@ -14,7 +14,7 @@ public class UniqueLockManager {
     //private Map<String, Map<String, UniqueLock>> uniqueLockTable = new HashMap<>();
     private static Table<String, String, UniqueLock> uniqueLockTable = HashBasedTable.create();
 
-    private static AtomicLong atomicLong = new AtomicLong(0L);
+    private static AtomicLong atomicLong = new AtomicLong(0);
 
     public static void hold(User user) {
         // 全局事件id
@@ -31,20 +31,22 @@ public class UniqueLockManager {
             // 获取 lock 对象
             UniqueLock uniqueLock = uniqueLockTable.get(key1, key2);
             if (uniqueLock == null) {
-                uniqueLock = new UniqueLock();
+                uniqueLock = new UniqueLock(key1, key2);
                 uniqueLockTable.put(key1, key2, uniqueLock);
             }
 
-            // 制作 lock
-            uniqueLock.setWait_count(uniqueLock.getWait_count() + 1);
-            long wait_event_id = uniqueLock.getEvent_id();
-            uniqueLock.setEvent_id(eventId);
-            // true 持有 false 释放
-            uniqueLock.getCond_map().put(eventId, true);
+            synchronized (uniqueLock) {
+                // 制作 lock
+                uniqueLock.setWait_count(uniqueLock.getWait_count() + 1);
+                long wait_event_id = uniqueLock.getEvent_id();
+                uniqueLock.setEvent_id(eventId);
+                // true 持有 false 释放
+                uniqueLock.getCond_map().put(eventId, true);
 
-            //
-            user.setEventId(eventId);
-            user.getWaitEventIdSet().add(wait_event_id);
+                //
+                user.setEventId(eventId);
+                user.getWaitEventIdSet().add(wait_event_id);
+            }
         });
 
     }
@@ -65,6 +67,8 @@ public class UniqueLockManager {
 
                 UniqueLock uniqueLock = uniqueLockTable.get(key1, key2);
 
+                // 获取锁
+
                 synchronized (uniqueLock) {
                     boolean isAllRelease = false;
                     while (!isAllRelease) {
@@ -81,6 +85,22 @@ public class UniqueLockManager {
                     }
                 }
 
+
+                // 获取锁 自旋方式
+                /*
+                boolean isAllRelease = false;
+                while (!isAllRelease) {
+                    for (int waitEventId : user.getWaitEventIdSet()) {
+                        if (waitEventId != 0 && uniqueLock.getCond_map().getOrDefault(waitEventId, false)) {
+                            System.out.println(user + "  " + key1 + "  " + key2 + "  我要排队等待  " + waitEventId);
+                            isAllRelease = false;
+                            break;
+                        } else {
+                            isAllRelease = true;
+                        }
+                    }
+                }
+                */
                 uniqueLockList.add(uniqueLock);
 
             }
@@ -98,13 +118,14 @@ public class UniqueLockManager {
             synchronized (uniqueLock) {
                 uniqueLock.setWait_count(uniqueLock.getWait_count() - 1);
                 if (uniqueLock.getWait_count() == 0) {
-                    uniqueLock.setEvent_id(0);
-                    uniqueLock.getCond_map().clear();
+                    //uniqueLock.setEvent_id(0);
+                    //uniqueLock.getCond_map().clear();
+                    uniqueLockTable.remove(uniqueLock.getKey1(), uniqueLock.getKey2());
+                    System.out.println("销毁锁" + user);
                 } else {
                     uniqueLock.getCond_map().put(user.getEventId(), false);
-                    user.getWaitEventIdSet().forEach(waitEventId -> {
-                        uniqueLock.getCond_map().remove(waitEventId);
-                    });
+                    user.getWaitEventIdSet().forEach(uniqueLock.getCond_map()::remove);
+                    // 如果是自旋方式获取锁，则不需要notifyAll
                     uniqueLock.notifyAll();
                 }
             }

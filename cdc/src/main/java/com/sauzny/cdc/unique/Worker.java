@@ -22,6 +22,10 @@ public class Worker extends Thread {
 
                 User user = bq.take();
 
+
+
+
+
                 // 实际应该先判断是否需要 releaseAndApply
                 // 然后再 releaseAndApply
                 UniqueLockManager.releaseAndApply(user, () -> doSomeBussiness(name, user, System.currentTimeMillis()));

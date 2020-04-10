@@ -9,10 +9,10 @@ public class User2 extends User {
     public String toString() {
         return "User2{" +
                 "id=" + super.getId() +
-                ", name='" + super.getName() + '\'' +
-                ", type='" + super.getType() + '\'' +
-                ", eventId=" + super.getEventId() +
-                ", waitEventId=" + super.getWaitEventIdSet() +
+                "\t name='" + super.getName() + '\'' +
+                "\t type='" + super.getType() + '\'' +
+                "\t eventId=" + super.getEventId() +
+                "\t waitEventId=" + super.getWaitEventIdSet() +
                 '}';
     }
 }

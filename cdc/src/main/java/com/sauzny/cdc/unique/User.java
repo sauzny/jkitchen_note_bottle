@@ -75,11 +75,11 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", eventId=" + eventId +
-                ", waitEventId=" + waitEventId +
-                ", waitEventId=" + waitEventIdSet +
+                "\t name='" + name + '\'' +
+                "\t type='" + type + '\'' +
+                "\t eventId=" + eventId +
+                "\t waitEventId=" + waitEventId +
+                "\t waitEventId=" + waitEventIdSet +
                 '}';
     }
 }
