@@ -25,11 +25,6 @@ public class Demo03 {
         // 造数据
         List<User> userList = new ArrayList<>();
 
-
-        userList.add(new User(1, "Obama", "Teacher1"));
-        userList.add(new User(2, "Obama", "President2"));
-        userList.add(new User(3, "Obama", "President3"));
-        /*
         userList.add(new User(1, "a1", "a1"));
         userList.add(new User(112, "Obama", "Teacher"));
         userList.add(new User(2, "a2", "a2"));
@@ -48,9 +43,9 @@ public class Demo03 {
         userList.add(new User(119, "Trump", "Unknown"));
         userList.add(new User(9, "a9", "a9"));
         userList.add(new User(120, "Obama", "Unknown"));
-        */
 
-/*
+
+
 
         userList.add(new User2(1, "a1", "a1"));
         userList.add(new User2(112, "Obama", "Teacher"));
@@ -70,11 +65,16 @@ public class Demo03 {
         userList.add(new User2(119, "Trump", "Unknown"));
         userList.add(new User2(9, "a9", "a9"));
         userList.add(new User2(120, "Obama", "Unknown"));
-*/
+
 
 
         // 分发数据
         for(int i=0; i<userList.size(); i++){
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             User user = userList.get(i);
 
             // 实际应该先判断是否需要 hold
